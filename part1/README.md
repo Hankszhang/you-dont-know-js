@@ -5,8 +5,6 @@
 ![](/assets/cover.jpg)
 
 ### 目录
-
-* [前言](../preface.md) 
 * [第一章: Into Programming](ch1.md) 
 * [第二章: Into JavaScript](ch2.md) 
 * [第三章: Into YDKJS](ch3.md) 

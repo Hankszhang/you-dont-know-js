@@ -341,7 +341,7 @@ var amount = 99.99;
 
 另外，这种防止出错的“保护机制”与静态类型的强制类型转换相似，因此你会发现其他语言中的静态类型是很优美的！
 
-*注：* 更多有关程序中变量支持的不同类型的值，请参见 *类型&语法* 一书。
+**注：** 更多有关程序中变量支持的不同类型的值，请参见 *类型&语法* 一书。
 
 ## 代码块
 
@@ -369,7 +369,7 @@ if (amount > 10) {          // <-- block attached to `if`
 ```
 下一节中我们会讨论if语句，上面的程序中，`if(amount>10)`后面紧接着`{...}`及其中的两条语句；之后if条件语句成立时，代码块内的语句才会被执行。
 
-*注：* 与`console.log(aomunt)`等语句不一样，代码块语句后面不需要加分号`;`
+**注：** 与`console.log(aomunt)`等语句不一样，代码块语句后面不需要加分号`;`
 
 ## 条件语句
 
@@ -416,5 +416,198 @@ JavaScript定义了一些被当做“假”的特定值，因为当它们被强�
 除了if之外，*条件语句* 还有其他形式。如`switch`语句可以用来简化一系列的`if...else`语句（见第二章）；循环语句用一个条件语句来判断继续循环还是停止。
 
 ## 循环
+
+在业务高峰期，顾客们排着长队等待店员的服务。只要队伍中还有人在排队，店员就需要继续服务下一个顾客。
+
+重复一系列动作直到某个特定的条件不成立——或者说，条件成立时一直重复——就是循环语句干的活；循环语句有不同的形式，但是它们做的事情基本都是这样的。
+
+一个循环包含一个测试条件和一个代码块。循环代码块执行一次，称为一次 *迭代*。
+
+例如，`while`循环和`do...while`循环表示重复执行一个代码块直到条件不在为true：
+```js
+while (numOfCustomers > 0) {
+    console.log( "How may I help you?" );
+    // help the customer...
+    numOfCustomers = numOfCustomers - 1;
+}
+
+// versus:
+do {
+    console.log( "How may I help you?" );
+    // help the customer...
+    numOfCustomers = numOfCustomers - 1;
+} while (numOfCustomers > 0);
+```
+这两个循环语句的不同之处在于条件的判断是在第一次迭代之前（while）还是在第一次迭代之后（do...while）。不管是那种形式，如果条件判断为false，则不再执行下一次迭代。这意味着，如果初识条件为false，那么while循环将永远不会运行，但是do...while循环仍旧会运行一次。
+
+有时候需要让循环执行给定数字表示的次数来实现某种功能，如从0到9（10个数字）。可以设置循环的初始变量如i为0，然后在每次迭代中自加1。
+
+**注意：** 出于诸多历史原因，编程语言中几乎总是从0开始计数，而不是同1开始。如果不习惯这种思维，会觉得很困扰。花点时间来练习从0开始计数并习惯这种方式吧！
+
+每次迭代都会做条件判断，就好像循环中有一个隐式的if语句一样。
+
+我们可以用JavaScript的`break`语句来中止一个循环。当然我们会发现很容易就会写一个不能被中止的死循环。
+例如：
+```js
+var i = 0;
+
+// a `while..true` loop would run forever, right?
+while (true) {
+    // stop the loop?
+    if ((i <= 9) === false) {
+        break;
+    }
+
+    console.log( i );
+    i = i + 1;
+}
+// 0 1 2 3 4 5 6 7 8 9
+```
+除了while和do...while之外，另一种循环的语法格式是`for`循环：
+```js
+for (var i = 0; i <= 9; i = i + 1) {
+    console.log( i );
+}
+// 0 1 2 3 4 5 6 7 8 9
+```
+可以看到，两个例子中前10次迭代的条件`i<=9`都为true（i的值从0到9），但是i值为10时则变为false。
+
+for循环有三条子句：初始化子句（var i=0）、条件测试子句（i <=9）以及更新子句（i = i+1）。所以如果你想用循环来计数的话，for循环更加简洁且便于理解和书写。
+
+还有其他的用于对特定值进行迭代的特殊循环形式，如迭代对象的属性（见第二章），它的隐性条件测试为是否所有的属性都被处理了。不管是何种形式的循环，“条件不成立则中止循环”的概念都是适用的。
+
+## 函数
+
+手机店店员可能没有带计算器，但是她需要计算出税费和应付金额。这是一个定义一次，可以反复使用的工作。公司很有可能有一个内置了这些功能的结账寄存器（电脑、平板等）。
+
+相似地，你的程序几乎肯定会将代码完成的任务分成一个个可重复使用的片段，而不是你自己反反复复地重写。我们可以通过定义`function`来实现。
+
+函数通常是一个命名的且可以通过该名字被调用的代码片段，每次被调用时，函数内部的代码都会执行一遍。例如：
+```js
+function printAmount() {
+    console.log( amount.toFixed( 2 ) );
+}
+
+var amount = 99.99;
+printAmount(); // "99.99"
+amount = amount * 2;
+
+printAmount(); // "199.98"
+```
+函数也可以接收参数——你传入的值。也可以选择性地返回一个值。
+```js
+function printAmount(amt) {
+    console.log( amt.toFixed( 2 ) );
+}
+
+function formatAmount() {
+    return "$" + amount.toFixed( 2 );
+}
+
+var amount = 99.99;
+printAmount( amount * 2 );      // "199.98"
+amount = formatAmount();
+console.log( amount );          // "$99.99"
+```
+函数printAmount(..)接收一个叫做amt的参数。函数formatAmount()返回一个值。当然我们也可以在同一个函数中既接收参数又返回值。
+
+通常将需要被多次调用的代码定义成函数，但是有时候尽管你只会调用一次，将代码组织成命名的片段集合也是很有用的。如：
+```js
+const TAX_RATE = 0.08;
+
+function calculateFinalPurchaseAmount(amt) {
+    // calculate the new amount with the tax
+    amt = amt + (amt * TAX_RATE);
+
+    // return the new amount
+    return amt;
+}
+
+var amount = 99.99;
+amount = calculateFinalPurchaseAmount( amount );
+console.log( amount.toFixed( 2 ) );     // "107.99"
+```
+尽管calculateFinalPurchaseAmount(..)只被调用了一次，将它的行为组织为一个单独的命名函数使得使用这段逻辑的代码更加清晰。如果函数有很多条语句，这样做带来的好处将更加明显。
+
+### 作用域
+如果你向店员询问这个手机店没有的手机型号，店员将没法买给你你想要的手机。她只能拿到她的店里库存的手机。你不得不换一家店看能不能找到你想要的手机。
+
+编程中这个概念的术语是：*作用域*（技术上称为 *词法作用域*）。在JavaScript中，每个函数都有自己的作用域。作用域实际上包括变量的集合和通过名字访问这些变量的规则。只有函数内部的代码才能访问该函数作用域内的变量。
+
+在同一个作用域内的变量名必须是唯一的——不能同时存在两个a变量。但是同一个变量名a可以出现在不同的作用域中。
+```js
+function one() {
+    // this `a` only belongs to the `one()` function
+    var a = 1;
+    console.log( a );
+}
+
+function two() {
+    // this `a` only belongs to the `two()` function
+    var a = 2;
+    console.log( a );
+}
+
+one();      // 1
+two();      // 2
+```
+当然，一个作用域可以被嵌套在另一个作用域内，就好像生日Party上小丑刺破一个气球，然后刺破这个气球里面的气球一样。如果一个作用域被另一个作用域嵌套，那么最内层作用域中的代码可以访问到其他作用域中的变量。
+如：
+```js
+function outer() {
+    var a = 1;
+    function inner() {
+        var b = 2;
+        // we can access both `a` and `b` here
+        console.log( a + b );   // 3
+    }
+    inner();
+    // we can only access `a` here
+    console.log( a );           // 1
+}
+outer();
+```
+词法作用域的规则：一个作用域中的代码能够访问这个作用域中的变量，也能访问到这个作用域外面的任何作用域中的变量。
+因此函数inner()内的代码可以同时访问变量a和b，但是outer()只能够访问a——不能访问b，因为它只存在与inner()内部。
+
+回忆前面的代码片段：
+```js
+const TAX_RATE = 0.08;
+
+function calculateFinalPurchaseAmount(amt) {
+    // calculate the new amount with the tax
+    amt = amt + (amt * TAX_RATE);
+    // return the new amount
+    return amt;
+}
+```
+因为有词法作用域，常量TAX_RATE可以在函数calculateFinalPurchaseAmount(..)内被访问到，尽管我们没有将其传入函数中。
+
+**注：** 更多词法作用域的知识，请参考 *作用域&闭包* 一书的前三章。
+
+## 练习
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 

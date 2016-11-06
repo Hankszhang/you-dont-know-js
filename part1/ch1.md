@@ -587,8 +587,83 @@ function calculateFinalPurchaseAmount(amt) {
 
 ## 练习
 
+学习编程，除了多练习绝对别无它法。仅仅阅读我写的这些表达性文字不能使成为一名程序员。
 
+牢记这一点，现在我们来练习在本章中学到的了一些概念。我给出要求，你们先自己动手尝试，然后参考我在下文给出的代码，看我是怎么实现的。
+* 写一个程序计算你购买手机所需的总金额。你一直买直到你的银行卡上没钱了。只要售价低于你的心理预期值，你就会给每台手机购买配件。
+* 计算好你的消费总额之后，加入税费，输出计算后的消费额，需要格式化。
+* 最后，检查你的银行账户余额，看是否足够支付。
+* 你应该将“税率”、“手机价格”、“配件价格”及“心理预期值”设为常量，将银行账户余额设为变量。
+* 你应该定义函数来计算税费、格式化价格（添加$,保留2位小数）。
+* **加分项**：在程序中加入输入，可以用prompt(..)函数。例如，你可以提示用户输入银行帐号余额。
+好了，开始练习吧。在你自己尝试之前不要偷看我下面的代码！
 
+下面是我用JavaScript写的参考答案：
+```js
+const SPENDING_THRESHOLD = 200;
+const TAX_RATE = 0.08;
+const PHONE_PRICE = 99.99;
+const ACCESSORY_PRICE = 9.99;
+
+var bank_balance = 303.91;
+var amount = 0;
+
+function calculateTax(amount) {
+    return amount * TAX_RATE;
+}
+
+function formatAmount(amount) {
+    return "$" + amount.toFixed( 2 );
+}
+
+// keep buying phones while you still have money
+while (amount < bank_balance) {
+    // buy a new phone!
+    amount = amount + PHONE_PRICE;
+
+    // can we afford the accessory?
+    if (amount < SPENDING_THRESHOLD) {
+        amount = amount + ACCESSORY_PRICE;
+    }
+}
+
+// don't forget to pay the government, too
+amount = amount + calculateTax( amount );
+
+console.log(
+    "Your purchase: " + formatAmount( amount )
+);
+// Your purchase: $334.76
+
+// can you actually afford this purchase?
+if (amount > bank_balance) {
+    console.log(
+        "You can't afford this purchase. :("
+    );
+}
+// You can't afford this purchase. :(
+```
+怎么样？现在看过我的代码之后再返回去试一试吧。试着改变一些常量的的值，看看程序的运行结果会有什么不同。
+
+## 复习
+
+学习编程不一定是一个复杂而艰难的过程，你只需在脑海中谨记一些基本概念。
+
+这个过程就更积木游戏一样，想搭建一座高塔，首先需要一块一块堆叠开始。编程也是这样的。下面是一些编程中必要的砖块：
+* 你需要 *操作符* 来对值进行操作
+* 你需要值和 *类型* 来执行不同的操作，如对number进行计算，或输出string。
+* 在程序执行时，你需要 *变量* 来保存数据（也即 *状态*）
+* 你需要类似if语句一样的 *条件语句* 来做判断
+* 你需要 *循环* 来重复执行特定工作，直到条件变为false
+* 你需要 *函数* 将代码组织成逻辑性强、可复用的代码块。
+
+使用代码注释可以使代码更具可读性，使得你的代码更易于理解、便于维护、如果出现bug也更好解决。
+
+最后，不要忽略练习的重要性。学习怎么写代码的最佳方法是动手写代码。
+
+现在，我很高兴你在学习如何编写代码！继续坚持。别忘了查阅其他的编程入门资料（书籍、博客、在线培训等）。学习本章及本书是一个不错的开始，但是这仅仅是简要介绍而已。
+
+下一章将重温本章中的很多概念，但是会更多地从JavaScript的角度出发，突出本系列剩下的内容中将进行深入讨论的主题。
 
 
 

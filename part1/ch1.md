@@ -371,7 +371,50 @@ if (amount > 10) {          // <-- block attached to `if`
 
 *注：* 与`console.log(aomunt)`等语句不一样，代码块语句后面不需要加分号`;`
 
+## 条件语句
 
+"多加$9.99即可买一张屏幕保护膜，需要吗？"友好的手机店店员请你做一个选择。而你首先需要考虑你的财务状况再来回答这个问题。但很明显，这是一个简单的“yes or no”问题。
 
+ 在程序中我们可以用很多方式来表示 *条件判断* （也即判断）。
+ 
+ 最常见的是`if`语句，实际上表达的意思是“如果这个条件成立，就做下面的事”。例如：
+ ```js
+var bank_balance = 302.13;
+var amount = 99.99;
+
+if (amount < bank_balance) {
+    console.log( "I want to buy this phone!" );
+}
+```
+if语句的`( )`中要求有一个结果为true或false的表达式。上面的例子中，我们的表达式是`amount<bank_balance`，实际上表达式的结果要么为true，要么为false，这取决于bank_balance变量值的大小。
+
+如果条件不成立，还可以增加一个else子句，如：
+```js
+const ACCESSORY_PRICE = 9.99;
+
+var bank_balance = 302.13;
+var amount = 99.99;
+
+amount = amount * 2;
+
+// can we afford the extra purchase?
+if ( amount < bank_balance ) {
+    console.log( "I'll take the accessory!" );
+    amount = amount + ACCESSORY_PRICE;
+}
+// otherwise:
+else {
+    console.log( "No, thanks." );
+}
+```
+如果`amount<bank_balance`为true，则会输出“I'll take the accessory!”，且amount变量加9.99。如果不成立，则执行else子句，礼貌地输出“No, thanks.”，amount保持不变。
+
+我们在“值&类型”一节中讨论过，如果值的类型不是期望的类型会被强制转换为期望的类型。if语句需要boolean类型的值，但是如果传入的不是boolean类型值，就会做强制类型转换。
+
+JavaScript定义了一些被当做“假”的特定值，因为当它们被强制转换为boolean类型时，它们的值会变为`false`——这些值包括`0`和`""`等。任何其他的值则自动表示“真”——当被强制转换为boolean类型时，它们的值为`true`，如99.99和"free"等。详细参加第二章的“真&假”一节。
+
+除了if之外，*条件语句* 还有其他形式。如`switch`语句可以用来简化一系列的`if...else`语句（见第二章）；循环语句用一个条件语句来判断继续循环还是停止。
+
+## 循环
 
 

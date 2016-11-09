@@ -644,7 +644,48 @@ publicAPI是一个具有一个login属性/方法的对象，这个login是对内
 
 ## `this`关键字
 
+JavaScript中另一个容易被误解的概念是`this`关键字。
 
+尽管this可能通常与“面向对象模式”相关，但是JS中的this具有不同的机制。
+
+如果一个函数内部有this引用，那么这个this引用实际上指向一个对象，而具体指向哪个对象取决于这个函数被调用的方式。
+
+需要记住的是这个this不是指向函数本身，而这是最常见的误解。
+
+这里有一个快速的说明：
+```js
+function foo() {
+    console.log( this.bar );
+}
+
+var bar = "global";
+
+var obj1 = {
+    bar: "obj1",
+    foo: foo
+};
+
+var obj2 = {
+    bar: "obj2"
+};
+
+// --------
+
+foo();              // "global"
+obj1.foo();         // "obj1"
+foo.call( obj2 );   // "obj2"
+new foo();          // undefined
+```
+下面四条规则解释了如何确定this的指向，正好对应上面代码段中的最后四行。
+1. 在非严格模式下，foo()最后的this指向全局对象——而严格模式下，this是undefined，访问bar属性是会报错——所以this.bar的值为"global"。
+2. obj1.foo()中的this指向对象obj1。
+3. foo.call(obj2)中的this指向对象obj2。
+4. new foo()中的this指向一个全新的空对象。
+结论：要理解this实际指向什么，需要弄清楚this所在函数是被怎么样调用的。调用方式是上面四种方式之一，然后就可以确定this的具体指向了。
+
+**注：** 更多关于this的知识，参考 *this&对象原型* 一书的第一章和第二章。
+
+## 原型
 
 
 

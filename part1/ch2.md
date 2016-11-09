@@ -436,8 +436,75 @@ var b = (a > 41) ? "hello" : "world";
 
 ## 严格模式
 
-ES5中为JS加入了“严格模式”，
- 
+ES5中为JS加入了“严格模式”，收紧了某些特定行为的规则。一般来说，这些限制可以使代码更安全、更符合规范的要求。当然，遵循严格模式会让你的代码最大化利用引擎。严格模式对代码有重要意义，你应该在你的所有程序中使用它。
+
+你可以选择对单个函数或整个文件使用严格模式，这取决于严格模式标识所在的位置：
+```js
+function foo() {
+    "use strict";
+
+    // this code is strict mode
+
+    function bar() {
+        // this code is strict mode
+    }
+}
+// this code is not strict mode
+ ```
+ 另外一种情况是：
+ ```js
+ "use strict";
+
+function foo() {
+    // this code is strict mode
+
+    function bar() {
+        // this code is strict mode
+    }
+}
+// this code is strict mode
+```
+严格模式的一个主要不同（改进！）是在忽略var时隐式地将变量声明为全局变量：
+```js
+function foo() {
+    "use strict";   // turn on strict mode
+    a = 1;          // `var` missing, ReferenceError
+}
+
+foo();
+```
+如果代码中开启了严格模式，上面的代码会报错，你的程序会出现bug，导致你会想避免使用严格模式。但是纵容这种想法是不应该的。如果因为使用严格模式导致你的程序出现bug，几乎可以肯定是你的程序本身的问题，应及时修复。
+
+严格模式不仅可以保证代码更安全、更优，而且代表了JS语言的未来发展方向。与其抛弃严格模式，现在就开始习惯严格模式将会更容易——以后再转换只会更加困难！
+
+## 函数作为值
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

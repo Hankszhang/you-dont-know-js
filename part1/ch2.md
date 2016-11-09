@@ -338,7 +338,7 @@ function foo() {
 foo();
 a;          // 1 -- oops, auto global variable :(
 ```
-这是一个典型的反面案例。千万不要这么做！永远记住正确地声明变量。
+这是一个典型的反面案例。千万不要这么做！记住永远正确地声明变量。
 
 另外，ES6支持函数级的变量声明，用'let'关键字声明的变量只属于独立的代码块（花括号`{..}`）内。除了一些细节不一样之外，这种作用域的规则基本上与函数中的表现一致：
 ```js
@@ -479,7 +479,170 @@ foo();
 
 ## 函数作为值
 
+目前为止我们讨论的函数是JavaScript中作用域的主要机制。通常通过下面的语法来声明`function`：
+```js
+function foo() {
+    // ...
+}
+```
+从上面的语法中可能不是很明显，其实foo只是外层作用域中的一个变量，它是声明的`function`的一个引用。也就是说，这个`function`本身是一个像42或[1,2,3]一样的值。
 
+这个概念可能一开始听起来比较奇怪，所以花点时间理解下吧。我们不仅可以给函数传递值（参数），而且 *函数本身就可以作为一个值* 赋给某个变量，传递给其他函数或其他函数返回。
+
+因此，函数值应该被当作表达式，就像其他值或表达式一样。
+
+例如：
+```js
+var foo = function() {
+    // ..
+};
+
+var x = function bar(){
+    // ..
+};
+```
+第一个函数表达式将一个 *匿名函数* 赋给foo变量。第二个 *命名的*（bar）函数表达式作为一个引用赋给变量x。一般更喜欢用 *命名函数表达式*，尽管 *匿名函数表达式* 也很常见。
+
+更多的细节参考 *作用域&闭包* 一书。
+
+### 立即执行函数表达式(IIFEs)
+
+在上一个例子中，两个函数都没有被执行——我们可以通过foo()或x()来调用。
+
+还有另一种方式来执行函数表达式，通常称为 *立即执行函数表达式*（IIFE）：
+```js
+(function IIFE(){
+    console.log( "Hello!" );
+})();
+// "Hello!"
+```
+函数表达式`(function IIFE(){ .. })`外面的`(..)`是为了与正常的函数声明区分开来的JS语法。表达式最后的`()`表示立即执行它前面的函数表达式。
+
+这种写法看起来很奇怪，但也没有第一眼看起来那么陌生。这里注意foo函数和IIFE的区别：
+```js
+function foo() { .. }
+
+// `foo` function reference expression,
+// then `()` executes it
+foo();
+
+// `IIFE` function expression,
+// then `()` executes it
+(function IIFE(){ .. })();
+```
+可以发现，`(function IIFE(){ .. })`之后接`()`表示执行本质上与`foo`之后接`()`来执行是相同的；两种方式都是在函数引用之后接`()`来执行函数。
+
+由于IIFE 也是函数，而函数会创建变量作用域，因此通常使用IIFE的方式来声明不会影响IIFE外面代码的变量：
+```js
+var a = 42;
+
+(function IIFE(){
+    var a = 10;
+    console.log( a );   // 10
+})();
+
+console.log( a );       // 42
+```
+IIFE也可以有返回值：
+```js
+var x = (function IIFE(){
+    return 42;
+})();
+
+x;  // 42
+```
+命名的IIFE函数被执行时返回42，然后赋给变量x。
+
+### 闭包
+
+*闭包* 是JavaScript中最重要也是最难理解的概念。我会在 *作用域&闭包* 书中详细阐述，这里不再赘述。但是我还是要简单介绍几点以便读者能有个基本概念。这会是你JS技能包里最重要的技术。
+
+你可以把闭包想象成：函数结束运行之后，“保留”并继续访问函数作用域（它的变量）的一种方式。
+例如：
+```js
+function makeAdder(x) {
+    // parameter `x` is an inner variable
+
+    // inner function `add()` uses `x`, so
+    // it has a "closure" over it
+    function add(y) {
+        return y + x;
+    };
+
+    return add;
+}
+```
+每次调用外层函数makeAdder()都返回内部的add()函数的引用，因此传递给makeAdder()函数的变量x的值会被保留。现在，我们来使用makeAdder()函数：
+```js
+// `plusOne` gets a reference to the inner `add(..)`
+// function with closure over the `x` parameter of
+// the outer `makeAdder(..)`
+var plusOne = makeAdder( 1 );
+
+// `plusTen` gets a reference to the inner `add(..)`
+// function with closure over the `x` parameter of
+// the outer `makeAdder(..)`
+var plusTen = makeAdder( 10 );
+
+plusOne( 3 );       // 4  <-- 1 + 3
+plusOne( 41 );      // 42 <-- 1 + 41
+
+plusTen( 13 );      // 23 <-- 10 + 13
+```
+这里解释一下上面的代码是如何运行的：
+1. 当执行makeAdder(1)时，返回内部函数add()的引用，该函数会保存变量x值为1。这个函数引用名字为plusOne()。
+2. 当执行makeAdder(10)时，返回内部函数add()的另一个引用，该函数会保存变量x值为10。这个函数引用名字为plusTen()。
+3. 当执行plusOne(3)时，将3（内部的y）加上1（x中保存的值），就得到结果4。
+4. 当执行plusTen(13)时，将13（内部的y）加上10（x中保存的值），就得到结果为23。
+如果开始被这个绕晕了，别担心——这是正常的！需要多加练习才能完全理解闭包。
+
+相信我，一旦掌握了闭包，它就是以后编程中最强大最有用的技术。绝对值得花精力让你的大脑熟悉闭包的概念。我们会在下一节中学习关于闭包的更多实践。
+
+#### 模块
+JavaScript中闭包最常见的用法是模块模式。模块允许你定义对外部不可见的私有实现细节（变量、函数），外部通过公开的API来访问模块。
+如：
+```js
+function User(){
+    var username, password;
+
+    function doLogin(user,pw) {
+        username = user;
+        password = pw;
+
+        // do the rest of the login work
+    }
+
+    var publicAPI = {
+        login: doLogin
+    };
+
+    return publicAPI;
+}
+
+// create a `User` module instance
+var fred = User();
+
+fred.login( "fred", "12Battery34!" );
+```
+User()函数是一个保存了变量username和password及内部函数doLogin()的外部作用域；这些都是Usr模块私有的内部细节，在外部不能被访问到。
+
+**注：** 这里我们有意不用new User()，虽然这种方式更常见。User()只是一个函数，而不是一个需要实例化的类，所以只需正常调用即可。这里不适合用new，实际上用了还会浪费资源。
+
+执行User()会创建一个User()模块的 *实例*——创建一个完整的新作用域，也即内部每个变量/函数的完整新副本。然后把这个实例赋给fred变量。如果我们再次执行User()，我们会得到一个与fred完全独立的新实例。
+
+内部的doLogin()函数对username和password有闭包引用，这意味着即使User()函数结束运行后，仍能访问到它们。
+
+publicAPI是一个具有一个login属性/方法的对象，这个login是对内部的doLogin()函数的引用。当我们从User()返回publicAPI时，它实例fred。
+
+此时，外层函数User()已经结束执行。按理说，内部变量username和password应该被销毁了。但是这里没有，因为login()函数内的闭包使它们得以保留。
+
+这就是为什么我们调用fred.login(..)时——与调用内部doLogin()相同——仍能访问到内部变量username和password。
+
+这个例子可以很好的帮助读者了解闭包和模块模式，可能还有一些不好理解，没关系，你的大脑需要花点时间来接受它！
+
+阅读 *作用域&闭包* 一书进行更深入的探索吧。
+
+## `this`关键字
 
 
 

@@ -16,6 +16,7 @@
 * `null` 和 `undefined`
 * `object`
 * `symbol` (ES6中新引入)
+
 JavaScript中可以用`typeof`操作符来查看某个值属于什么类型：
 ```js
 var a;
@@ -39,6 +40,7 @@ typeof a;				// "undefined"
 a = { b: "c" };
 typeof a;				// "object"
 ```
+
 `typeof`操作符的返回值永远是六种类型之一（ES6中是7种类型，包括'symbol'类型）的字符串值。例如，`typeof "abc"`返回`"string"`，而不是`string`。
 
 注意上面的代码中变量a可以保存不同类型的值，`typeof a`不是获取变量a的类型，而是获取变量a中当前值的类型。JavaScript中只有值才有类型，而变量仅仅是存放这些值的容器。
@@ -709,6 +711,7 @@ bar.a;      // 42 <-- delegated to `foo`
 下面的图表示了foo与bar之间的关系：
 
 ![](/assets/fig3.png)
+
 实际上bar对象上不存在属性a，但是因为bar与foo之间有原型链，JavaScript会自动回溯到对象foo上寻找属性a。
 
 这种链接似乎是一个很奇怪的特性。这个特性用的最多的场景是——我会说，滥用——用于模拟/伪造具有“继承”特性的“类”机制。

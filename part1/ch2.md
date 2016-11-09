@@ -329,7 +329,114 @@ foo();
 ```
 注意在函数bar()内无法访问变量c，因为它是在内部的baz()函数内声明的，同样的，函数foo()内也无法访问变量b。
 
+如果试着访问一个在该作用域不能被访问的变量，会抛出`ReferenceError`错误。如果试着对一个未声明的变量赋值，在“严格模式”下会报错，但是非严格模式下则会在全局作用域创建这个变量（不好！）。我们看下这个例子：
+```js
+function foo() {
+    a = 1;  // `a` not formally declared
+}
 
+foo();
+a;          // 1 -- oops, auto global variable :(
+```
+这是一个典型的反面案例。千万不要这么做！永远记住正确地声明变量。
+
+另外，ES6支持函数级的变量声明，用'let'关键字声明的变量只属于独立的代码块（花括号`{..}`）内。除了一些细节不一样之外，这种作用域的规则基本上与函数中的表现一致：
+```js
+function foo() {
+    var a = 1;
+
+    if (a >= 1) {
+        let b = 2;
+
+        while (b < 5) {
+            let c = b * 2;
+            b++;
+
+            console.log( a + c );
+        }
+    }
+}
+
+foo();
+// 5 7 9
+```
+由于使用let而不是var，变量b仅属于if语句而不属于整个foo()函数的作用域。同样的，c只属于while循环。块级作用域有助于更好更精细地管理变量作用域，从而简化代码的维护。
+ 
+**注：** 更多关于作用域的知识，参考 *作用域&闭包* 一书。关于let块级作用域的知识参考 *ES6&未来* 一书。
+ 
+## 条件语句
+ 
+除了我们在第一章介绍的if语句之外，JavaScript还支持其他几种条件机制，我们后面再讨论。
+ 
+有时候，你可能会写一大串的`if...else...if`语句，像这样：
+```js
+if (a == 2) {
+    // do something
+}
+else if (a == 10) {
+    // do another thing
+}
+else if (a == 42) {
+    // do yet another thing
+}
+else {
+    // fallback to here
+}
+```
+这种写法没什么问题，但是显得很冗余，因为每个子句都需要做一次条件判断。这种情况下，可以用`switch`语句：
+```js
+switch (a) {
+    case 2:
+        // do something
+        break;
+    case 10:
+        // do another thing
+        break;
+    case 42:
+        // do yet another thing
+        break;
+    default:
+        // fallback to here
+}
+```
+如果希望每个子句中的语句只执行一次，则必须加上`break`。如果子句中没有break语句，当执行这个子句后，会继续执行下一个子句里面的语句，而不管下一个子句是否匹配条件判断语句。这种现象成为“通过”，有时候是很有用且希望出现的。
+```js
+switch (a) {
+    case 2:
+    case 10:
+        // some cool stuff
+        break;
+    case 42:
+        // other stuff
+        break;
+    default:
+        // fallback
+}
+```
+这里，不管a等于2还是10，都会执行"some cool stuff"代码语句。
+
+JavaScript中另一个条件语句是被称为“三元操作符”的“条件操作符”。它更像是单个`if...else`语句的简写，如：
+```js
+var a = 42;
+
+var b = (a > 41) ? "hello" : "world";
+
+// 等同于:
+
+// if (a > 41) {
+//    b = "hello";
+// }
+// else {
+//    b = "world";
+// }
+```
+如果测试表达式（这里是`a>41`）结果为true，结果是第一个子句（"hello"），否则结果就是第二个子句（"world"）。然后再将结果赋值给变量b。
+
+条件操作符不一定要用于赋值语句，但这无疑是它最常见的用法。
+
+## 严格模式
+
+ES5中为JS加入了“严格模式”，
  
 
 

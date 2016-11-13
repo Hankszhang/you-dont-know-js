@@ -2,8 +2,9 @@
 
 ---
 
-![](/assets/cover.jpg)
+![](/assets/cover1.jpg)
 
+---
 ### 目录
 * [第一章: 深入程序设计](ch1.md) 
     * 代码

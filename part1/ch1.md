@@ -93,7 +93,8 @@ b = a * 2;
 console.log( b );
 ```
 在Chrome的控制台中输入上面的代码会得到下面的输出：
-![](/assets/fig1.png)
+
+<img src="/assets/fig1.png" width="500">
 
 好了，试一试吧。学习编程的最佳方法就是动手敲代码！
 

@@ -106,7 +106,7 @@ var MyReallyCoolLibrary = {
 
 需要注意的是这些工具并没有可以不遵守词法作用域规则的“魔法”。他们只不过是根据作用域规则来保证不会有标识符被注入到任何共享作用域中，而是保存在私有的、不易冲突的作用域中，从而避免意外的作用域冲突。
 
-## 函数作为作用域
+## 函数作用域
 
 我们已经知道了将任意代码片段放入函数中可以将代码中的变量和函数声明“隐藏”在函数内部作用域，而对外层作用域不可见。尽管这种方法有用，但是也会带来一些问题。首先是我们需要声明一个命名函数，而这个函数的名字本身会“污染”外部作用域。另外，我们必须显示地根据名字调用函数来执行包裹在函数中的代码。如果函数不需要名字（或，名字不会污染作用域）且可以自动执行，将会更理想。
 
@@ -153,5 +153,88 @@ setTimeout( function timeoutHandler(){ // <-- Look, I have a name!
 ```
 
 ### 立即执行函数表达式
-    
+```js
+var a = 2;
+
+(function foo(){
+
+    var a = 3;
+    console.log( a ); // 3
+
+})();
+
+console.log( a ); // 2
+```
+我们可以在用括号'()'包裹的函数表达式后面再用一对括号‘()’来执行这个函数，像这样的形式`(function foo(){ ..})()`。第一对括号将这个函数变为一个表达式，第二对括号执行这个函数。
+
+这种写法非常常见，因此社区用一个术语：IIFE 来给它命名，表示“Immediately Invoked Function Expression”（立即执行函数表达式）。
+
+当然，IIFE 可以没有名字 —— 大多数情况下IIFE使用匿名函数表达式。但是尽管用的不多，但是给 IIFE 表达式命名总是会带来好处（上文已述）。
+
+```js
+var a = 2;
+
+(function IIFE(){
+
+    var a = 3;
+    console.log( a ); // 3
+
+}());
+
+console.log( a ); // 2
+```
+
+有些人喜欢用这种IIFE 形式：`(function(){...}())`。仔细辨别这种两种形式的区别。第一种形式中，函数表达式包裹在`( )`中，然后再在最后通过`()`调用函数。在第二种形式中，用于调用函数的括号对`()`被放到了外层括号的里面。这两种形式的作用是完全一样的，纯粹根据个人喜好来选择即可。
+
+调用立即执行函数的时候我们可以给他传入参数，如：
+```js
+var a = 2;
+
+(function IIFE( global ){
+
+    var a = 3;
+    console.log( a ); // 3
+    console.log( global.a ); // 2
+
+})( window );
+
+console.log( a ); // 2
+```
+这种传参形式可用于解决默认的undefined 标识符可能被覆盖的问题。为IIFE定义一个参数`undefined`， 但是给这个参数传入值，就可以保证立即执行函数中的 undefined 标识符确实等于 undefined 值：
+```js
+undefined = true; // setting a land-mine for other code! avoid!
+
+(function IIFE( undefined ){
+
+    var a;
+    if (a === undefined) {
+        console.log( "Undefined is safe here!" );
+    }
+
+})();
+```
+IIFE还有一种可以改变代码执行顺序的变体形式：
+```js
+var a = 2;
+
+(function IIFE( def ){
+    def( window );
+})(function def( global ){
+
+    var a = 3;
+    console.log( a ); // 3
+    console.log( global.a ); // 2
+
+});
+```
+这段代码中，def 函数作为参数传入 IIFE 中，然后 def 函数被调用时传入参数window（定义中的形式参数 global）。
+
+这种形式通常用在 通用模块定义中（UMD，Universal Module Definition）。
+
+## 块级作用域
+
+
+
+
+  
 

@@ -233,6 +233,92 @@ var a = 2;
 
 ## 块级作用域
 
+ES6之前，JS 不支持块级作用域，块级作用域中的变量可以在定义其的代码块之外使用。因此，开发者应该强制自己养成一种块级作用域习惯，在块级作用域中定义的变量只在块级作用域中使用。
+
+### `with`
+with 语句中，对象创建的作用域仅存在于 with 语句内，而不属于外层作用域。
+
+### `try/catch`
+ES3中指出在`try/catch`语句的`catch`子句中声明的变量只属于`catch`块中，例如：
+```js
+try {
+    undefined(); // illegal operation to force an exception!
+}
+catch (err) {
+    console.log( err ); // works!
+}
+
+console.log( err ); // ReferenceError: `err` not found
+```
+
+### `let`
+ES6中引入了关键字`let`，以不同于`var`的方式声明变量。let 关键字声明的变量只属于包含该条声明语句的代码块（通常是一个{}括号对）中。如：
+```js
+var foo = true;
+
+if (foo) {
+    let bar = foo * 2;
+    bar = something( bar );
+    console.log( bar );
+}
+
+console.log( bar ); // ReferenceError
+```
+需要注意的是，let 关键字声明的变量不会提升到其所在作用域的顶部，因此这些变量在声明语句出现之前都是不可用的。
+```js
+{
+    console.log( bar ); // ReferenceError!
+    let bar = 2;
+}
+```
+
+#### 内存回收
+块级作用域有助于闭包相关的内存回收。闭包机制会在第五章中详细阐述。
+考虑：
+```js
+function process(data) {
+    // do something interesting
+}
+
+var someReallyBigData = { .. };
+
+process( someReallyBigData );
+
+var btn = document.getElementById( "my_button" );
+
+btn.addEventListener( "click", function click(evt){
+    console.log("button clicked");
+}, /*capturingPhase=*/false );
+```
+这个例子中，click 处理函数完全不会用到someReallyBigData变量，理论上，process 函数执行完后，这个占用大量内存的数据结构就会被当做垃圾回收了。然而，很有可能 JS 引擎仍会保留这个变量，因为 click 函数的作用域外有一个闭包。
+
+块级作用域就可以很好的解决这个问题，它明确的告诉 JS 引擎不需要保留 someReallyBigData 变量：
+```js
+function process(data) {
+    // do something interesting
+}
+
+// anything declared inside this block can go away after!
+{
+    let someReallyBigData = { .. };
+
+    process( someReallyBigData );
+}
+
+var btn = document.getElementById( "my_button" );
+
+btn.addEventListener( "click", function click(evt){
+    console.log("button clicked");
+}, /*capturingPhase=*/false );
+```
+为变量显示的声明作用域块以达到局部绑定的目的，是可以加入到你编码技能包里的一个强大技能。
+
+#### 循环中的`let`
+
+
+
+
+
 
 
 

@@ -315,12 +315,76 @@ btn.addEventListener( "click", function click(evt){
 
 #### 循环中的`let`
 
+let用于for循环最能体现其优点。
+```js
+for (let i=0; i<10; i++) {
+    console.log( i );
+}
 
+console.log( i ); // ReferenceError
+```
+上面的代码中，for循环头部的let不仅将变量i绑定到for循环体内，而且对每一次迭代都会重新绑定，这样就能确保将上一次迭代后的i值赋给当前迭代的i值。上面的代码等效于：
+```js
+{
+    let j;
+    for (j=0; j<10; j++) {
+        let i = j; // re-bound for each iteration!
+        console.log( i );
+    }
+}
+```
+由于let声明的变量是块级作用域，而不仅仅属于函数封装的作用域，因此用let替换var重构代码时需要格外注意，因为已有的代码可能会对var声明的函数级作用域有隐藏依赖关系。
+考虑：
+```js
+var foo = true, baz = 10;
 
+if (foo) {
+    var bar = 3;
 
+    if (baz > bar) {
+        console.log( baz );
+    }
+    // ...
+}
+```
+这段代码可以很简单的重构为：
+```js
+var foo = true, baz = 10;
 
+if (foo) {
+    var bar = 3;
+    // ...
+}
+if (baz > bar) {
+    console.log( baz );
+}
+```
+但是如果用块级作用域变量重构时，就需要注意了：
+```js
+var foo = true, baz = 10;
 
+if (foo) {
+    let bar = 3;
 
+    if (baz > bar) { // <-- don't forget `bar` when moving!
+        console.log( baz );
+    }
+}
+```
 
-  
+#### `const`
+除了let之外，ES6中还引入了const关键字，它也可以创建一个块级作用域变量，只不过它的值是固定的（常量）。一旦声明之后，任何尝试修改该值的行为都会报错。
+```js
+var foo = true;
 
+if (foo) {
+    var a = 2;
+    const b = 3; // block-scoped to the containing `if`
+
+    a = 3; // just fine!
+    b = 4; // error!
+}
+
+console.log( a ); // 3
+console.log( b ); // ReferenceError!
+```

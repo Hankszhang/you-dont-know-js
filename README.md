@@ -19,8 +19,7 @@
     * [第三章：函数 VS 块级作用域](part2/ch3.md)
     * [第四章：变量提升](part2/ch4.md)
     * [第五章：作用域闭包](part2/ch5.md)
-    * [附录A：动态作用域]
-    * [附录B：Polyfilling 块级作用域]
-    * [附录C：词法作用域中的this]
+    * [附录A：动态作用域](part2/apdA.md)
+    * [附录B：词法作用域中的this](part2/apdB.md)
 
 ---
